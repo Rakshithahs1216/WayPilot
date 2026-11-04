@@ -1,0 +1,28 @@
+navigator:
+  ros__parameters:
+    max_linear_speed: 0.22        # m/s
+    min_linear_speed: 0.03        # m/s
+    max_angular_speed: 1.5        # rad/s
+    k_linear: 0.8
+    k_angular: 2.0
+    goal_tolerance: 0.08          # m, waypoint considered reached inside this radius
+    rotate_in_place_threshold: 0.6  # rad, rotate in place above this heading error
+    drive_threshold: 0.25         # rad, start driving below this heading error
+    control_rate: 20.0            # Hz
+    odom_timeout: 0.5             # s, stop the robot if odometry is older than this
+    odom_lost_abort: 5.0          # s, abort the goal if odometry stays missing
+    # Per-waypoint time budget = base + factor * (distance / max_linear_speed).
+    goal_timeout_base: 30.0       # s, <= 0 disables the timeout
+    goal_timeout_factor: 3.0
+
+mission_manager:
+  ros__parameters:
+    status_rate: 5.0              # Hz
+    max_coordinate: 50.0          # m, reject waypoints outside ±max_coordinate
+    max_waypoints: 200
+
+web_bridge:
+  ros__parameters:
+    host: "0.0.0.0"
+    port: 8080
+    service_timeout: 3.0          # s

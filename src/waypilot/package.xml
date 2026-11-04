@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>waypilot</name>
+  <version>1.0.0</version>
+  <description>Waypoint follower for TurtleBot with a web UI: navigation, mission state tracking and HTTP bridge nodes.</description>
+  <maintainer email="201125347+Rakshithahs1216@users.noreply.github.com">Rakshitha H S</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>action_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>rcl_interfaces</depend>
+  <depend>waypilot_interfaces</depend>
+
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <!-- Only needed for waypilot_sim.launch.py -->
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>turtlebot3_gazebo</exec_depend>
+
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
