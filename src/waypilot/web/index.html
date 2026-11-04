@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WayPilot</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M12 2 4 20l8-4 8 4z" fill="currentColor"/>
+      </svg>
+      <span>WayPilot</span>
+    </div>
+    <div id="conn" class="pill pill-offline" role="status">Connecting…</div>
+  </header>
+
+  <main class="layout">
+    <section class="card map-card">
+      <div class="card-head">
+        <h2>Map <span class="muted">(odom frame)</span></h2>
+        <div class="map-tools">
+          <span id="cursor" class="muted mono">x —, y —</span>
+          <button id="btn-fit" class="btn btn-ghost" title="Auto-fit view">Fit</button>
+          <button id="btn-trail" class="btn btn-ghost" title="Clear robot trail">Clear trail</button>
+        </div>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="map" aria-label="Map: click to add a waypoint"></canvas>
+      </div>
+      <p class="hint muted">Click to add a waypoint · drag to pan · scroll to zoom</p>
+    </section>
+
+    <aside class="side">
+      <section class="card">
+        <div class="card-head">
+          <h2>Status</h2>
+          <span id="state" class="badge badge-IDLE">—</span>
+        </div>
+        <p id="message" class="message">Waiting for mission manager…</p>
+        <dl class="stats">
+          <div><dt>Position</dt><dd id="pos" class="mono">—</dd></div>
+          <div><dt>Heading</dt><dd id="yaw" class="mono">—</dd></div>
+          <div><dt>Speed</dt><dd id="speed" class="mono">—</dd></div>
+          <div><dt>Active waypoint</dt><dd id="active" class="mono">—</dd></div>
+          <div><dt>Distance to target</dt><dd id="dist" class="mono">—</dd></div>
+        </dl>
+        <div class="progress-row">
+          <div class="progress" aria-hidden="true"><div id="progress-bar"></div></div>
+          <span id="progress-text" class="mono">0 / 0</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Mission</h2></div>
+        <div class="controls">
+          <button class="btn btn-primary" data-cmd="start">Start</button>
+          <button class="btn" data-cmd="pause">Pause</button>
+          <button class="btn" data-cmd="resume">Resume</button>
+          <button class="btn" data-cmd="skip">Skip</button>
+          <button class="btn btn-danger" data-cmd="stop">Stop</button>
+          <button class="btn btn-ghost" data-cmd="clear">Clear all</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Waypoints</h2>
+          <span id="wp-count" class="muted">0</span>
+        </div>
+        <form id="add-form" class="add-form" autocomplete="off">
+          <label>x <input name="x" type="number" step="0.01" required placeholder="0.00"></label>
+          <label>y <input name="y" type="number" step="0.01" required placeholder="0.00"></label>
+          <button class="btn btn-primary" type="submit">Add</button>
+        </form>
+        <ol id="wp-list" class="wp-list"></ol>
+        <p id="wp-empty" class="muted empty">No waypoints yet. Click the map or use the form.</p>
+      </section>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast" role="alert" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
