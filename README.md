@@ -154,6 +154,14 @@ ros2 launch waypilot waypilot.launch.py
 
 The connection badge in the top-right shows **Live**, **No data from robot** (the bridge is up but no status is arriving), or **Disconnected** (the browser reconnects automatically).
 
+### Troubleshooting
+
+| Symptom | Cause and fix |
+|---|---|
+| `Cannot open the web UI on port 8080: Address already in use` | Another program, often a Docker container, already uses port 8080. Pick a free port: `ros2 launch waypilot waypilot_sim.launch.py port:=8090`, then open http://localhost:8090. |
+| Gazebo window closes with `GLib-GIO-ERROR … 'antialiasing'` | The terminal belongs to a Snap-packaged app (for example VS Code installed via snap) and injects Snap GUI paths. `waypilot_sim.launch.py` removes these automatically. If you start Gazebo some other way, use a regular system terminal. The simulation itself keeps running either way. |
+| Robot doesn't move and the badge shows **No data from robot** | Nothing is publishing `/odom`. Check that the simulator or robot bringup is running: `ros2 topic hz /odom`. |
+
 ---
 
 ## HTTP API

@@ -246,8 +246,17 @@ def main(args=None):
     rclpy.init(args=args)
     gateway = RosGateway()
     stop_event = threading.Event()
-    server = ThreadingHTTPServer((gateway.host, gateway.port),
-                                 make_handler(gateway, stop_event))
+    try:
+        server = ThreadingHTTPServer((gateway.host, gateway.port),
+                                     make_handler(gateway, stop_event))
+    except OSError as err:
+        gateway.get_logger().fatal(
+            f'Cannot open the web UI on port {gateway.port}: {err.strerror}. '
+            f'Another program is probably using it; start with a different '
+            f'port, e.g. "port:=8090".')
+        gateway.destroy_node()
+        rclpy.shutdown()
+        raise SystemExit(1)
     server.daemon_threads = True
     http_thread = threading.Thread(target=server.serve_forever, daemon=True)
     http_thread.start()

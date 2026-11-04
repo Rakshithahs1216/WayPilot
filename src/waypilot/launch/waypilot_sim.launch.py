@@ -12,10 +12,39 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     AppendEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription,
-    SetEnvironmentVariable)
+    SetEnvironmentVariable, UnsetEnvironmentVariable)
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+
+SNAP_GUI_VARIABLES = (
+    'GTK_PATH', 'GTK_EXE_PREFIX', 'GTK_IM_MODULE_FILE', 'GIO_MODULE_DIR',
+    'GSETTINGS_SCHEMA_DIR', 'LOCPATH', 'GDK_PIXBUF_MODULE_FILE', 'GDK_PIXBUF_MODULEDIR',
+)
+SNAP_SEARCH_PATHS = ('XDG_DATA_DIRS', 'XDG_CONFIG_DIRS')
+
+
+def _is_snap_path(path):
+    return path.startswith(('/snap/', os.path.expanduser('~/snap/')))
+
+
+def snap_environment_fixes():
+    """
+    Undo the GUI environment injected by Snap-packaged terminals.
+
+    Terminals of Snap apps (e.g. VS Code installed via snap) point GTK/GIO
+    and the XDG search paths into the Snap runtime. The Gazebo window then
+    loads incompatible GSettings schemas and aborts with
+    "GLib-GIO-ERROR ... does not contain a key named 'antialiasing'".
+    """
+    actions = [UnsetEnvironmentVariable(name) for name in SNAP_GUI_VARIABLES
+               if _is_snap_path(os.environ.get(name, ''))]
+    for name in SNAP_SEARCH_PATHS:
+        entries = os.environ.get(name, '').split(':')
+        kept = [entry for entry in entries if entry and not _is_snap_path(entry)]
+        if len(kept) != len([entry for entry in entries if entry]):
+            actions.append(SetEnvironmentVariable(name, ':'.join(kept)))
+    return actions
 
 
 def generate_launch_description():
@@ -44,6 +73,8 @@ def generate_launch_description():
         SetEnvironmentVariable('GAZEBO_MODEL_DATABASE_URI', ''),
         *[AppendEnvironmentVariable('GAZEBO_MODEL_PATH', path)
           for path in sorted(glob('/usr/share/gazebo*/models'))],
+
+        *snap_environment_fixes(),
 
         include(os.path.join(gazebo_ros, 'launch', 'gzserver.launch.py'), {'world': world}),
         include(os.path.join(gazebo_ros, 'launch', 'gzclient.launch.py'),
