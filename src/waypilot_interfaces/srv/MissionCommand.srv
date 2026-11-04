@@ -1,0 +1,5 @@
+# One of: start | pause | resume | stop | clear
+string command
+---
+bool success
+string message

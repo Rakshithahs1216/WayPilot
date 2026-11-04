@@ -1,0 +1,10 @@
+# Drive the robot to a single 2D point in the odometry frame.
+float64 x
+float64 y
+---
+bool success
+string message
+float64 final_distance
+---
+float64 distance_remaining   # [m]
+float64 heading_error        # [rad]
